@@ -1,0 +1,15 @@
+{
+  "cmc": {
+    "enabled": true,
+    "products": ["Appirio DX"]
+  },
+  
+  "projectType": [
+    "sfdx"
+  ],
+  "rollbar": {
+    "enabled": true
+  },
+  "sourceBranchToClone": "SIT",
+  "sourceControlType": "git"
+}

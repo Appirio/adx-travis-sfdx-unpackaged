@@ -1,0 +1,18 @@
+{
+  "name": "appirio-dx-ezbake",
+  "version": "1.0.0",
+  "description": "Do fancy stuff during ezbake installs",
+  "main": "ezbaker.js",
+  "scripts": {
+    "gitlabCI": "node ezbaker"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@appirio/appirio": "^1.9.1",
+    "@salesforce/core": "^1.2.2",
+    "ansi-colors": "^1.1.0",
+    "fs-extra": "^7.0.1",
+    "write-yaml": "^1.0.0"
+  }
+}

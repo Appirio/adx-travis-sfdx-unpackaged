@@ -1,0 +1,43 @@
+# Ignore hidden folders by default
+.*
+
+# But don't ignore certain config files
+!/.gitignore
+!/.gitlab-ci.yml
+!/.ezbake
+!*.gitkeep*
+
+# local config files
+.env
+config/local*
+
+# Dependency directories
+node_modules/
+
+# OS-specific files
+.DS_Store
+
+# Folders used by plugins and IDE
+!.vscode/
+.vscode/settings.json
+
+#Mavensmate IDE files
+config/.*
+
+#force-dev-tool files
+config/deployments
+
+# Temporary build Folders
+package/
+build/
+
+# Logs
+RetrieveStatistics.log
+
+# Other Stuff?
+selenium-client-jars/
+test/artifacts
+/bin/
+
+#testing ezbake
+/ezbake-sample

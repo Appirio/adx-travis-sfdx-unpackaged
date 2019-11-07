@@ -1,0 +1,13 @@
+{
+  "name": "appirio-dx-ezbake",
+  "version": "1.0.0",
+  "description": "Install required modules before template execution",
+  "main": "index.js",
+  "scripts": {},
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "ansi-colors": "^1.1.0",
+    "inquirer": "^3.3.0"
+  }
+}

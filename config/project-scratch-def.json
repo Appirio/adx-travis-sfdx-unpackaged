@@ -1,0 +1,10 @@
+{
+    "orgName": "adx-travis-sfdx-unpackaged",
+    "edition": "Enterprise",
+    "orgPreferences": {
+        "enabled": [
+            "S1DesktopEnabled",
+            "ChatterEnabled"
+        ]
+    }
+}
