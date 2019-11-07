@@ -5,6 +5,7 @@
 !/.gitignore
 !/.gitlab-ci.yml
 !/.ezbake
+!/.travis.yml
 !*.gitkeep*
 
 # local config files
