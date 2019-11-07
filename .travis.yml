@@ -1,0 +1,76 @@
+sudo: true
+os: linux
+cache: false
+language: generic
+
+git:
+  depth: false
+
+before_install:
+- wget https://appiriodx-website-prod.s3.amazonaws.com/downloads/adx-dev-cli-linux.tar.gz -P adx
+- (cd adx && tar -xzf adx-dev-cli-linux.tar.gz)
+- export PATH=$(pwd)/adx:$PATH
+
+stages:
+  - name: sonarqube_scan_publish
+    if: (branch = master) OR (branch =~ feature\/*)
+  - name: validate_against_SIT
+    if: branch =~ feature\/*
+  - name: deploy_to_SIT
+    if: branch = SIT
+  - name: validate_against_UAT
+    if: branch = SIT
+  - name: deploy_to_UAT
+    if: branch = master
+  - name: validate_against_PROD
+    if: branch = master
+  - name: deploy_to_PROD
+    if: tag =~ /^v[0-9.]+$/
+
+jobs:
+
+  include:
+
+      - stage: sonarqube_scan_publish
+        name: sonarqube_scan_publish
+        before_script:
+          - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.0.3.778-linux.zip -P adx
+          - (cd adx && unzip sonar-scanner-cli-3.0.3.778-linux.zip)
+          - export PATH=$(pwd)/adx/sonar-scanner-3.0.3.778-linux/bin:$PATH
+        script: sonar-scanner -Dsonar.sources=. -Dsonar.login=$SONAR_LOGIN -Dsonar.analysis.mode=publish
+
+      - stage: validate_against_SIT
+        name: validate_against_SIT
+        script:
+          - adx metadata:unique --sourcepath force-org/default/metadata,force-org/sample/metadata
+          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --checkonly --targetalias SIT
+
+      - stage: deploy_to_SIT
+        name: deploy_to_SIT
+        script:
+          - adx metadata:unique --sourcepath force-org/default/metadata,force-org/sample/metadata
+          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --targetalias SIT
+
+      - stage: validate_against_UAT
+        name: validate_against_UAT
+        script:
+          - adx metadata:unique --sourcepath force-org/default/metadata,force-org/sample/metadata
+          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --checkonly --targetalias UAT
+
+      - stage: deploy_to_UAT
+        name: deploy_to_UAT
+        script:
+          - adx metadata:unique --sourcepath force-org/default/metadata,force-org/sample/metadata
+          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --targetalias UAT
+
+      - stage: validate_against_PROD
+        name: validate_against_PROD
+        script:
+          - adx metadata:unique --sourcepath force-org/default/metadata,force-org/sample/metadata
+          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --testlevel NoTestRun --checkonly --targetalias PROD
+
+      - stage: deploy_to_PROD
+        name: deploy_to_PROD
+        script:
+          - adx metadata:unique --sourcepath force-org/default/metadata,force-org/sample/metadata
+          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --testlevel RunLocalTests --targetalias PROD
