@@ -3,13 +3,12 @@ os: linux
 cache: false
 language: generic
 
-git:
-  depth: false
-
-before_install:
-- wget https://appiriodx-website-prod.s3.amazonaws.com/downloads/adx-dev-cli-linux.tar.gz -P adx
-- (cd adx && tar -xzf adx-dev-cli-linux.tar.gz)
-- export PATH=$(pwd)/adx:$PATH
+before_script:
+- export adx_dir=adx-cli
+- git fetch --depth=10000
+- wget https://appiriodx-website-prod.s3.amazonaws.com/downloads/adx-dev-cli-linux.tar.gz -P $adx_dir
+- (cd $adx_dir && tar -xzf adx-dev-cli-linux.tar.gz)
+- export PATH=$(pwd)/$adx_dir:$PATH
 
 stages:
   - name: sonarqube_scan_publish
@@ -24,6 +23,10 @@ stages:
     if: branch = master
   - name: validate_against_PROD
     if: branch = master
+
+# Ideally, This job should be triggered manually. But currently travis ci does not support manual actions for yml based pipelines.
+#  This 'Deploy to PROD' job gets triggered whenever there is matching tag on commit.
+# This will be updated in future when travis ci starts supporting manual trigger.
   - name: deploy_to_PROD
     if: tag =~ /^v[0-9.]+$/
 
@@ -34,9 +37,10 @@ jobs:
       - stage: sonarqube_scan_publish
         name: sonarqube_scan_publish
         before_script:
-          - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.0.3.778-linux.zip -P adx
-          - (cd adx && unzip sonar-scanner-cli-3.0.3.778-linux.zip)
-          - export PATH=$(pwd)/adx/sonar-scanner-3.0.3.778-linux/bin:$PATH
+          - export sonar_dir=sonarqube
+          - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.0.3.778-linux.zip -P $sonar_dir
+          - (cd $sonar_dir && unzip sonar-scanner-cli-3.0.3.778-linux.zip)
+          - export PATH=$(pwd)/$sonar_dir/sonar-scanner-3.0.3.778-linux/bin:$PATH
         script: sonar-scanner -Dsonar.sources=. -Dsonar.login=$SONAR_LOGIN -Dsonar.analysis.mode=publish
 
       - stage: validate_against_SIT
@@ -68,9 +72,7 @@ jobs:
         script:
           - adx metadata:unique --sourcepath force-org/default/metadata,force-org/sample/metadata
           - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --testlevel NoTestRun --checkonly --targetalias PROD
-# Ideally, This job should be triggered manually. But currently travis ci does not support manual actions for yml based pipelines.
-#  This 'Deploy to PROD' job gets triggered whenever there is matching tag on commit.
-# This will be updated in future when travis ci starts supporting manual trigger.
+
       - stage: deploy_to_PROD
         name: deploy_to_PROD
         script:
