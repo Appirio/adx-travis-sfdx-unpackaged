@@ -24,7 +24,7 @@ stages:
   - name: validate_against_PROD
     if: branch = master
 
-# Ideally, This job should be triggered manually. But currently travis ci does not support manual actions for yml based pipelines.
+# Ideally, This job should be triggered manually. But currently travis ci does not support manual actions.
 #  This 'Deploy to PROD' job gets triggered whenever there is matching tag on commit.
 # This will be updated in future when travis ci starts supporting manual trigger.
   - name: deploy_to_PROD
