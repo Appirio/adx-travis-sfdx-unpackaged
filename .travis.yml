@@ -71,7 +71,7 @@ jobs:
         name: validate_against_PROD
         script:
           - adx metadata:unique --sourcepath force-org/default/metadata,force-org/sample/metadata
-          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --testlevel NoTestRun --testlevel NoTestRun --checkonly --targetalias PROD
+          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --testlevel NoTestRun --checkonly --targetalias PROD
 
       - stage: deploy_to_PROD
         name: deploy_to_PROD
