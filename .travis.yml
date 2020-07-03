@@ -6,7 +6,7 @@ language: generic
 before_script:
 - export adx_dir=adx-cli
 - git fetch --depth=10000
-- wget https://appiriodx-website-prod.s3.amazonaws.com/downloads/adx-cli-linux.tar.gz -P $adx_dir
+- wget https://dx.appirio.com/downloads/adx-cli-linux.tar.gz -P $adx_dir
 - (cd $adx_dir && tar -xzf adx-cli-linux.tar.gz)
 - export PATH=$(pwd)/$adx_dir:$PATH
 
