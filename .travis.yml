@@ -41,7 +41,7 @@ jobs:
           - (cd $sonar_dir && unzip sonar-scanner-cli-4.0.0.1744-linux.zip)
           - export PATH=$(pwd)/$sonar_dir/sonar-scanner-4.0.0.1744-linux/bin:$PATH
         script:
-          - sonar-scanner -Dsonar.login='5025e21c8aae8328c330f80b16f6e6d457e8df1b' -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300
+          - sonar-scanner -Dsonar.login=$SONAR_ENT_LOGIN -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300
 
       - stage: validate_against_SIT
         name: validate_against_SIT
