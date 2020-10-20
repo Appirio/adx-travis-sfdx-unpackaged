@@ -40,7 +40,7 @@ jobs:
           - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip -P $sonar_dir
           - (cd $sonar_dir && unzip sonar-scanner-cli-4.0.0.1744-linux.zip)
           - export PATH=$(pwd)/$sonar_dir/sonar-scanner-4.0.0.1744-linux/bin:$PATH
-        script: sonar-scanner-ee -Dsonar.login=$SONAR_DEV_LOGIN -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300
+        script: sonar-scanner -Dsonar.login=$SONAR_DEV_LOGIN -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300
 
       - stage: validate_against_SIT
         name: validate_against_SIT
