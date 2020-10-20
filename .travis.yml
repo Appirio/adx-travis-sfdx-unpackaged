@@ -42,7 +42,7 @@ jobs:
           - export PATH=$(pwd)/$sonar_dir/sonar-scanner-4.0.0.1744-linux/bin:$PATH
         script:
           - sonar-scanner -v
-          - sonar-scanner -Dsonar.login=$SONAR_DEV_LOGIN -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300
+          - sonar-scanner -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300
 
       - stage: validate_against_SIT
         name: validate_against_SIT
