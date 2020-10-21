@@ -12,6 +12,7 @@ before_script:
 
 stages:
   - name: sonarqube_scan
+    if: tag IS blank
   - name: validate_against_SIT
     if: branch =~ feature\/*
   - name: deploy_to_SIT
