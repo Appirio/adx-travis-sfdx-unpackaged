@@ -11,8 +11,7 @@ before_script:
 - export PATH=$(pwd)/$adx_dir:$PATH
 
 stages:
-  - name: sonarqube_scan_publish
-    if: (branch = master) OR (branch =~ feature\/*)
+  - name: sonarqube_scan
   - name: validate_against_SIT
     if: branch =~ feature\/*
   - name: deploy_to_SIT
@@ -34,14 +33,15 @@ jobs:
 
   include:
 
-      - stage: sonarqube_scan_publish
-        name: sonarqube_scan_publish
+      - stage: sonarqube_scan
+        name: sonarqube_scan
         before_script:
           - export sonar_dir=sonarqube
-          - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.0.3.778-linux.zip -P $sonar_dir
-          - (cd $sonar_dir && unzip sonar-scanner-cli-3.0.3.778-linux.zip)
-          - export PATH=$(pwd)/$sonar_dir/sonar-scanner-3.0.3.778-linux/bin:$PATH
-        script: sonar-scanner -Dsonar.sources=. -Dsonar.login=$SONAR_LOGIN -Dsonar.analysis.mode=publish
+          - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip -P $sonar_dir
+          - (cd $sonar_dir && unzip sonar-scanner-cli-4.0.0.1744-linux.zip)
+          - export PATH=$(pwd)/$sonar_dir/sonar-scanner-4.0.0.1744-linux/bin:$PATH
+        script:
+          - sonar-scanner -Dsonar.login=$SONAR_ENT_LOGIN -Dsonar.branch.name=$TRAVIS_BRANCH -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300
 
       - stage: validate_against_SIT
         name: validate_against_SIT
