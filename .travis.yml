@@ -26,4 +26,4 @@ jobs:
           - (cd $sonar_dir && unzip sonar-scanner-cli-4.4.0.2170-linux.zip)
           - export PATH=$(pwd)/$sonar_dir/sonar-scanner-4.4.0.2170-linux/bin:$PATH
         script:
-          - adx test:execute --command="sonar-scanner -Dsonar.login='$SONAR_LOGIN' -Dsonar.qualitygate.wait=true" --tool=SonarQube --monitoralias=TEST
+          - adx test:execute --command="sonar-scanner -Dsonar.login='$SONAR_RAHUL_LOGIN' -Dsonar.qualitygate.wait=true" --tool=SonarQube --monitoralias=TEST
