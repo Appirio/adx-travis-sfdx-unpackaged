@@ -6,29 +6,13 @@ language: generic
 before_script:
 - export adx_dir=adx-cli
 - git fetch --depth=10000
-- wget https://dx.appirio.com/downloads/adx-cli-linux.tar.gz -P $adx_dir
-- (cd $adx_dir && tar -xzf adx-cli-linux.tar.gz)
+- wget https://appiriodx-cli-dev.s3.us-east-2.amazonaws.com/dev-adx-135813-linux -P $adx_dir
+- (cd $adx_dir && mv dev-adx-135813-linux adx && chmod 777 adx)
 - export PATH=$(pwd)/$adx_dir:$PATH
 
 stages:
   - name: sonarqube_scan
     if: tag IS blank
-  - name: validate_against_SIT
-    if: branch =~ feature\/*
-  - name: deploy_to_SIT
-    if: branch = SIT
-  - name: validate_against_UAT
-    if: branch = SIT
-  - name: deploy_to_UAT
-    if: branch = master
-  - name: validate_against_PROD
-    if: branch = master
-
-# Ideally, This job should be triggered manually. But currently travis ci does not support manual actions.
-#  This 'Deploy to PROD' job gets triggered whenever there is matching tag on commit.
-# This will be updated in future when travis ci starts supporting manual trigger.
-  - name: deploy_to_PROD
-    if: tag =~ /^v[0-9.]+$/
 
 jobs:
 
@@ -38,44 +22,8 @@ jobs:
         name: sonarqube_scan
         before_script:
           - export sonar_dir=sonarqube
-          - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip -P $sonar_dir
-          - (cd $sonar_dir && unzip sonar-scanner-cli-4.0.0.1744-linux.zip)
-          - export PATH=$(pwd)/$sonar_dir/sonar-scanner-4.0.0.1744-linux/bin:$PATH
+          - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.4.0.2170-linux.zip -P $sonar_dir
+          - (cd $sonar_dir && unzip sonar-scanner-cli-4.4.0.2170-linux.zip)
+          - export PATH=$(pwd)/$sonar_dir/sonar-scanner-4.4.0.2170-linux/bin:$PATH
         script:
-          - sonar-scanner -Dsonar.login=$SONAR_ENT_LOGIN -Dsonar.branch.name=$TRAVIS_BRANCH -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300
-
-      - stage: validate_against_SIT
-        name: validate_against_SIT
-        script:
-          - adx metadata:unique --sourcepath force-org/default/metadata,force-org/sample/metadata
-          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --testlevel NoTestRun --checkonly --targetalias SIT
-
-      - stage: deploy_to_SIT
-        name: deploy_to_SIT
-        script:
-          - adx metadata:unique --sourcepath force-org/default/metadata,force-org/sample/metadata
-          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --testlevel RunLocalTests --targetalias SIT
-
-      - stage: validate_against_UAT
-        name: validate_against_UAT
-        script:
-          - adx metadata:unique --sourcepath force-org/default/metadata,force-org/sample/metadata
-          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --testlevel NoTestRun --checkonly --targetalias UAT
-
-      - stage: deploy_to_UAT
-        name: deploy_to_UAT
-        script:
-          - adx metadata:unique --sourcepath force-org/default/metadata,force-org/sample/metadata
-          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --testlevel RunLocalTests --targetalias UAT
-
-      - stage: validate_against_PROD
-        name: validate_against_PROD
-        script:
-          - adx metadata:unique --sourcepath force-org/default/metadata,force-org/sample/metadata
-          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --testlevel NoTestRun --checkonly --targetalias PROD
-
-      - stage: deploy_to_PROD
-        name: deploy_to_PROD
-        script:
-          - adx metadata:unique --sourcepath force-org/default/metadata,force-org/sample/metadata
-          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --testlevel RunLocalTests --targetalias PROD
+          - adx test:execute --command="sonar-scanner -Dsonar.login='$SONAR_LOGIN' -Dsonar.qualitygate.wait=true" --tool=SonarQube --monitoralias=TEST
