@@ -1,11 +1,12 @@
 {
   "cmc": {
     "enabled": true,
-    "products": ["Appirio DX"]
+    "products": [
+      "Appirio DX"
+    ]
   },
-  
   "projectType": [
-    "sfdx"
+    "sfdx-org"
   ],
   "rollbar": {
     "enabled": true
