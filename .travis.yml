@@ -1,5 +1,6 @@
 sudo: true
 os: linux
+dist: focal
 cache: false
 language: generic
 
@@ -48,7 +49,7 @@ jobs:
         name: validate_against_SIT
         script:
           - adx metadata:unique --sourcepath force-org/default/metadata,force-org/sample/metadata
-          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --testlevel NoTestRun --checkonly --targetalias SIT
+          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --checkonly --targetalias SIT --monitoralias MONITORING
 
       - stage: deploy_to_SIT
         name: deploy_to_SIT
