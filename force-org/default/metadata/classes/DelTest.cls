@@ -17,7 +17,7 @@ static testmethod void testadd()
  static testmethod void testmul()
  {
          integer res=Del.mul(6, 5);
-         system.assertEquals(res, 30, 'add failed');
+         system.assertEquals(res, 32, 'add failed');
          //system.assertEquals(80,res, 'addition failed');
  }
 }
