@@ -1,18 +1,19 @@
 sudo: true
 os: linux
+dist: focal
 cache: false
 language: generic
 
 before_script:
 - export adx_dir=adx-cli
 - git fetch --depth=10000
-- wget https://dx.appirio.com/downloads/adx-cli-linux.tar.gz -P $adx_dir
-- (cd $adx_dir && tar -xzf adx-cli-linux.tar.gz)
+- wget https://appiriodx-cli-prerelease.s3.us-east-2.amazonaws.com/dev-adx-135955-linux -P $adx_dir
+- (cd $adx_dir && mv dev-adx-135955-linux adx && chmod 777 adx)
 - export PATH=$(pwd)/$adx_dir:$PATH
 
 stages:
-  - name: sonarqube_scan
-    if: tag IS blank
+#  - name: sonarqube_scan
+#    if: tag IS blank
   - name: validate_against_SIT
     if: branch =~ feature\/*
   - name: deploy_to_SIT
@@ -34,27 +35,27 @@ jobs:
 
   include:
 
-      - stage: sonarqube_scan
-        name: sonarqube_scan
-        before_script:
-          - export sonar_dir=sonarqube
-          - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip -P $sonar_dir
-          - (cd $sonar_dir && unzip sonar-scanner-cli-4.0.0.1744-linux.zip)
-          - export PATH=$(pwd)/$sonar_dir/sonar-scanner-4.0.0.1744-linux/bin:$PATH
-        script:
-          - sonar-scanner -Dsonar.login=$SONAR_ENT_LOGIN -Dsonar.branch.name=$TRAVIS_BRANCH -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300
+#      - stage: sonarqube_scan
+#        name: sonarqube_scan
+#        before_script:
+#          - export sonar_dir=sonarqube
+#          - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip -P $sonar_dir
+#          - (cd $sonar_dir && unzip sonar-scanner-cli-4.0.0.1744-linux.zip)
+#          - export PATH=$(pwd)/$sonar_dir/sonar-scanner-4.0.0.1744-linux/bin:$PATH
+#        script:
+#          - sonar-scanner -Dsonar.login=$SONAR_ENT_LOGIN -Dsonar.branch.name=$TRAVIS_BRANCH -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300
 
       - stage: validate_against_SIT
         name: validate_against_SIT
         script:
           - adx metadata:unique --sourcepath force-org/default/metadata,force-org/sample/metadata
-          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --testlevel NoTestRun --checkonly --targetalias SIT
+          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --checkonly --targetalias SIT --monitoralias MONITORING
 
       - stage: deploy_to_SIT
         name: deploy_to_SIT
         script:
           - adx metadata:unique --sourcepath force-org/default/metadata,force-org/sample/metadata
-          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --testlevel RunLocalTests --targetalias SIT
+          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --testlevel RunLocalTests --targetalias SIT --monitoralias MONITORING
 
       - stage: validate_against_UAT
         name: validate_against_UAT
