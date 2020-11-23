@@ -55,7 +55,7 @@ jobs:
         name: deploy_to_SIT
         script:
           - adx metadata:unique --sourcepath force-org/default/metadata,force-org/sample/metadata
-          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --testlevel RunLocalTests --targetalias SIT
+          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --testlevel RunLocalTests --targetalias SIT --monitoralias MONITORING
 
       - stage: validate_against_UAT
         name: validate_against_UAT
