@@ -1,5 +1,5 @@
 @istest
-public class DelTest12
+public class DelTest
 {
 static testmethod void testadd()
 {
