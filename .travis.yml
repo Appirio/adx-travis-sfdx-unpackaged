@@ -7,8 +7,8 @@ language: generic
 before_script:
 - export adx_dir=adx-cli
 - git fetch --depth=10000
-- wget https://appiriodx-cli-prerelease.s3.us-east-2.amazonaws.com/dev-adx-135955-linux -P $adx_dir
-- (cd $adx_dir && mv dev-adx-135955-linux adx && chmod 777 adx)
+- wget https://dx.appirio.com/downloads/adx-191047-linux.zip -P $adx_dir
+- (cd $adx_dir && unzip adx-191047-linux.zip && rm adx-191047-linux.zip && chmod 777 adx)
 - export PATH=$(pwd)/$adx_dir:$PATH
 
 stages:
@@ -57,11 +57,11 @@ jobs:
           - adx metadata:unique --sourcepath force-org/default/metadata,force-org/sample/metadata
           - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --testlevel RunLocalTests --targetalias SIT --monitoralias MONITORING
 
-      - stage: validate_against_UAT
-        name: validate_against_UAT
-        script:
-          - adx metadata:unique --sourcepath force-org/default/metadata,force-org/sample/metadata
-          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --testlevel NoTestRun --checkonly --targetalias UAT
+      # - stage: validate_against_UAT
+      #   name: validate_against_UAT
+      #   script:
+      #     - adx metadata:unique --sourcepath force-org/default/metadata,force-org/sample/metadata
+      #     - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --testlevel NoTestRun --checkonly --targetalias UAT
 
       - stage: deploy_to_UAT
         name: deploy_to_UAT
