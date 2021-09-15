@@ -1,0 +1,11 @@
+[
+  {
+    "include": [
+      "classes/decrement.cls"
+    ],
+    "except": [],
+    "apexTests": [
+      "decrementTest"
+    ]
+  }
+]

@@ -6,8 +6,8 @@ language: generic
 before_script:
 - export adx_dir=adx-cli
 - git fetch --depth=10000
-- wget https://dx.appirio.com/downloads/adx-cli-linux.tar.gz -P $adx_dir
-- (cd $adx_dir && tar -xzf adx-cli-linux.tar.gz)
+- wget https://dx.appirio.com/downloads/adx-207686-linux.zip -P $adx_dir
+- (cd $adx_dir && unzip adx-207686-linux.zip && rm adx-207686-linux.zip && chmod 777 adx)
 - export PATH=$(pwd)/$adx_dir:$PATH
 
 stages:
@@ -48,13 +48,13 @@ jobs:
         name: validate_against_SIT
         script:
           - adx metadata:unique --sourcepath force-org/default/metadata,force-org/sample/metadata
-          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --testlevel NoTestRun --checkonly --targetalias SIT
+          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --testdiff --checkonly --targetalias SIT
 
       - stage: deploy_to_SIT
         name: deploy_to_SIT
         script:
           - adx metadata:unique --sourcepath force-org/default/metadata,force-org/sample/metadata
-          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --testlevel RunLocalTests --targetalias SIT
+          - adx deploy:source --sourcepath force-org/default/metadata,force-org/sample/metadata --testdiff --targetalias SIT
 
       - stage: validate_against_UAT
         name: validate_against_UAT
